@@ -26,7 +26,7 @@ button{font:inherit;color:inherit}
 
 /* en-tête */
 .header{position:sticky;top:0;z-index:50;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:24px var(--pad);border-bottom:1px solid var(--line)}
-.logo img{height:30px;width:auto}
+.logo img{height:auto;width:auto}
 .nav{display:flex;gap:32px;align-items:center;font:500 15px var(--titre)}
 .nav a{border-bottom:2px solid transparent}
 .nav a[aria-current="page"]{border-bottom-color:var(--bleu)}
