@@ -66,4 +66,42 @@
     });
   });
 
+  // FAQ : trait organique à droite, avec nœuds, tracé au défilement
+  var fil = document.querySelector('[data-fil]');
+  if (fil) {
+    var NS = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(NS, 'svg'); svg.setAttribute('class', 'fil'); svg.setAttribute('aria-hidden', 'true');
+    var path = document.createElementNS(NS, 'path'); path.setAttribute('pathLength', '1');
+    path.style.strokeDasharray = '1'; svg.appendChild(path); fil.insertBefore(svg, fil.firstChild);
+    var reduit = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var build = function () {
+      var W = 220, H = fil.offsetHeight, x = W / 2, y = 30, i = 0;
+      svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+      var d = 'M' + (x + 40) + ' 0 C ' + (x + 60) + ' 10, ' + x + ' 20, ' + x + ' ' + y;
+      while (y < H - 260) {
+        var h = 240 + (i % 3) * 40;
+        if (i % 2) {
+          // nœud : la courbe se recroise
+          d += ' C ' + (x + 150) + ' ' + (y + h * 1.05) + ', ' + (x - 150) + ' ' + (y + h * 0.35) + ', ' + x + ' ' + (y + h);
+        } else {
+          var s2 = i % 4 ? -1 : 1;
+          d += ' C ' + (x + 70 * s2) + ' ' + (y + h * .3) + ', ' + (x - 70 * s2) + ' ' + (y + h * .7) + ', ' + x + ' ' + (y + h);
+        }
+        y += h; i++;
+      }
+      d += ' C ' + (x - 40) + ' ' + (y + 60) + ', ' + (x + 60) + ' ' + (H - 80) + ', ' + (x + 30) + ' ' + (H - 20);
+      path.setAttribute('d', d); update();
+    };
+    var update = function () {
+      if (reduit) { path.style.strokeDashoffset = '0'; return; }
+      var r = fil.getBoundingClientRect();
+      var p = Math.max(0, Math.min(1, (window.innerHeight * .75 - r.top) / Math.max(1, r.height)));
+      path.style.strokeDashoffset = String(1 - p);
+    };
+    build();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', build);
+    window.addEventListener('load', build);
+  }
+
 })();
